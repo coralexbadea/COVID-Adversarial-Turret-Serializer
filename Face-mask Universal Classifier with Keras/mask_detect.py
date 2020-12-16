@@ -109,7 +109,8 @@ maskModel = load_model(args["model"])
 # initialize the video stream
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
-
+port = args["port"]
+ard = Serial(port,9600,timeout=5)
 # loop over the frames from the video stream
 while True:
 	# get the frame from the threaded video stream and resize it
@@ -138,10 +139,10 @@ while True:
 			serialX = 180 - (serialX*180)/w
 			serialY = (serialY*180)/h
 
-			writeToPort(args['port'], serialX, serialY)
+			ard.write("X{}Y{}".format(serialX, serialY).encode())
 		#else just send the (0,0) position
 		else:
-			writeToPort(args['port'], 0, 0)
+			ard.write("X{}Y{}".format(0, 0).encode())
 		color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
 
 		# include the probability in the label
